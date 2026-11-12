@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#2563eb">
+  <meta name="description" content="Vehicle service and estimation app">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="apple-touch-icon" href="./icons/icon-192.png">
+  <title>Vehicle Service & Estimation App</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    body { font-family: 'Inter', sans-serif; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
+  <header class="bg-blue-600 text-white p-4 shadow-md sticky top-0 z-50">
+    <div class="max-w-md mx-auto flex justify-between items-center">
+      <div><h1 id="greeting" class="text-lg font-bold">Hello!</h1><p id="datetime" class="text-xs text-blue-100"></p></div>
+      <div class="bg-blue-700 p-2 rounded-full shadow-inner"><i class="fa-solid fa-car-wrench text-xl"></i></div>
+    </div>
+  </header>
+  <main class="flex-1 max-w-md w-full mx-auto p-4 pb-20">
+    <div id="step-1" class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 mb-4">
+      <h2 class="text-base font-semibold text-slate-700 mb-3 flex items-center gap-2"><span class="bg-blue-100 text-blue-600 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold">1</span>Vehicle & Customer Details</h2>
+      <div class="space-y-3">
+        <div><label class="block text-xs font-medium text-slate-500 mb-1">Vehicle Registration Number</label><input type="text" id="vehicleNo" placeholder="e.g. GJ05AB1234" autocomplete="off" class="w-full px-3 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none uppercase text-sm font-semibold tracking-wide"></div>
+        <div><label class="block text-xs font-medium text-slate-500 mb-1">Customer Mobile Number</label><input type="tel" id="mobileNo" placeholder="e.g. 9876543210" maxlength="10" inputmode="numeric" class="w-full px-3 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none text-sm font-semibold tracking-wide"></div>
+        <button onclick="goToStep2()" class="w-full mt-2 bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-xl font-medium text-sm transition shadow-sm">Next: Select Service Type <i class="fa-solid fa-arrow-right ml-1"></i></button>
+      </div>
+    </div>
+
+    <div id="step-2" class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 mb-4 hidden">
+      <div class="flex justify-between items-center mb-3"><h2 class="text-base font-semibold text-slate-700 flex items-center gap-2"><span class="bg-blue-100 text-blue-600 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold">2</span>Service Type</h2><button onclick="backToStep(1)" class="text-xs text-blue-600 font-medium hover:underline">Edit Info</button></div>
+      <div class="grid grid-cols-3 gap-2 mb-3">
+        <button onclick="selectServiceType('Free')" id="btn-free" class="p-3 border-2 border-slate-200 rounded-xl text-center hover:border-blue-500 transition focus:outline-none"><i class="fa-solid fa-gift text-blue-600 text-lg mb-1 block"></i><span class="text-xs font-semibold block">Free Service</span></button>
+        <button onclick="selectServiceType('Paid')" id="btn-paid" class="p-3 border-2 border-slate-200 rounded-xl text-center hover:border-blue-500 transition focus:outline-none"><i class="fa-solid fa-file-invoice-dollar text-emerald-600 text-lg mb-1 block"></i><span class="text-xs font-semibold block">Paid Service</span></button>
+        <button onclick="selectServiceType('Running Repair')" id="btn-repair" class="p-3 border-2 border-slate-200 rounded-xl text-center hover:border-blue-500 transition focus:outline-none"><i class="fa-solid fa-screwdriver-wrench text-amber-600 text-lg mb-1 block"></i><span class="text-xs font-semibold block">Running Repair</span></button>
+      </div>
+      <div id="free-suboptions" class="hidden mt-3 p-3 bg-slate-50 rounded-xl border border-slate-200"><label class="block text-xs font-medium text-slate-600 mb-2">Select Free Service Type:</label><div class="grid grid-cols-3 gap-2">
+        <button onclick="selectSubService('1st Free')" class="free-sub-btn p-2 bg-white border border-slate-200 rounded-lg text-xs font-medium hover:bg-blue-50 hover:border-blue-500">1st Free</button>
+        <button onclick="selectSubService('2nd Free')" class="free-sub-btn p-2 bg-white border border-slate-200 rounded-lg text-xs font-medium hover:bg-blue-50 hover:border-blue-500">2nd Free</button>
+        <button onclick="selectSubService('3rd Free')" class="free-sub-btn p-2 bg-white border border-slate-200 rounded-lg text-xs font-medium hover:bg-blue-50 hover:border-blue-500">3rd Free</button>
+      </div></div>
+      <div id="paid-suboptions" class="hidden mt-3 p-3 bg-slate-50 rounded-xl border border-slate-200"><label class="block text-xs font-medium text-slate-600 mb-2">Select PMS Package:</label><div class="grid grid-cols-2 gap-2">
+        <button onclick="selectSubService('PMS 20/30/40/60/80/90')" class="paid-sub-btn p-2.5 bg-white border border-slate-200 rounded-lg text-xs font-medium text-left hover:bg-emerald-50 hover:border-emerald-500">PMS 20/30/40/60/80/90 (₹2200)</button>
+        <button onclick="selectSubService('PMS 50/70/90')" class="paid-sub-btn p-2.5 bg-white border border-slate-200 rounded-lg text-xs font-medium text-left hover:bg-emerald-50 hover:border-emerald-500">PMS 50/70/90 (₹2000)</button>
+      </div></div>
+      <button id="proceed-workjob" onclick="goToWorkjob()" class="w-full mt-3 bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-xl font-medium text-sm transition shadow-sm hidden">Next: Select Workjob Tasks <i class="fa-solid fa-arrow-right ml-1"></i></button>
+    </div>
+
+    <div id="step-3" class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 mb-4 hidden">
+      <div class="flex justify-between items-center mb-3"><h2 class="text-base font-semibold text-slate-700 flex items-center gap-2"><span class="bg-blue-100 text-blue-600 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold">3</span>Workjob Tasks & Parts</h2><button onclick="backToStep(2)" class="text-xs text-blue-600 font-medium hover:underline">Change Service</button></div>
+      <p id="workjob-subtitle" class="text-xs text-slate-500 mb-3 font-medium"></p>
+      <div id="workjob-list" class="space-y-2 max-h-72 overflow-y-auto pr-1"></div>
+      <button onclick="generateEstimate()" class="w-full mt-4 bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 rounded-xl font-medium text-sm transition shadow-sm">Generate Estimation <i class="fa-solid fa-calculator ml-1"></i></button>
+    </div>
+
+    <div id="step-4" class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 mb-4 hidden">
+      <div class="flex justify-between items-center mb-3"><h2 class="text-base font-semibold text-slate-700 flex items-center gap-2"><span class="bg-blue-100 text-blue-600 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold">4</span>Service Estimate</h2><button onclick="backToStep(3)" class="text-xs text-blue-600 font-medium hover:underline">Edit Tasks</button></div>
+      <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 mb-3 text-xs space-y-1">
+        <div class="flex justify-between"><span class="text-slate-500">Vehicle:</span><span id="summary-vehicle" class="font-bold uppercase"></span></div>
+        <div class="flex justify-between"><span class="text-slate-500">Mobile:</span><span id="summary-mobile" class="font-bold"></span></div>
+        <div class="flex justify-between"><span class="text-slate-500">Service:</span><span id="summary-servicetype" class="font-bold text-blue-600"></span></div>
+      </div>
+      <div class="border border-slate-200 rounded-xl overflow-hidden mb-3"><table class="w-full text-left border-collapse"><thead><tr class="bg-slate-100 text-slate-600 text-xs font-semibold"><th class="p-2.5">Item / Part</th><th class="p-2.5 text-right">Amount (₹)</th></tr></thead><tbody id="estimate-table-body" class="divide-y divide-slate-100 text-xs"></tbody></table></div>
+      <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-1.5 text-xs mb-4">
+        <div class="flex justify-between text-slate-600"><span>Subtotal:</span><span id="calc-subtotal" class="font-semibold">₹0</span></div>
+        <div class="flex justify-between text-slate-600"><span>GST (18%):</span><span id="calc-gst" class="font-semibold">₹0</span></div>
+        <div class="border-t border-slate-200 pt-1.5 flex justify-between text-sm font-bold text-slate-800"><span>Grand Total:</span><span id="calc-grandtotal" class="text-blue-600">₹0</span></div>
+      </div>
+      <button onclick="sendWhatsApp()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl font-medium text-sm transition shadow-md flex items-center justify-center gap-2"><i class="fa-brands fa-whatsapp text-lg"></i>Send Estimate on WhatsApp</button>
+    </div>
+    <p class="text-center text-[11px] text-slate-400 mt-5">Vehicle Service Estimator · Works offline after first load</p>
+  </main>
+  <script>
+    let deferredInstallPrompt = null;
+    const standardPrices = {"Engine oil":2000,"AC filter":650,"Air filter":350,"Coolant":600,"Brake oil":500,"Gear oil":2000,"Spark plug":2500,"Fuel filter":3500,"Alignment":455,"Balancing":385,"Injectors cleaning":530,"Throttle body cleaning":255,"Diagnosis":980,"Brake service":837.37,"Paid service":0};
+    let appData = {vehicleNo:"",mobileNo:"",serviceType:"",subService:"",selectedTasks:[]};
+
+    function updateDateTime(){
+      const now=new Date();
+      document.getElementById('datetime').innerText=now.toLocaleDateString('en-IN',{weekday:'short',year:'numeric',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit'});
+      const h=now.getHours();
+      document.getElementById('greeting').innerText=h<12?"Good Morning ☀️":h<17?"Good Afternoon 🌤️":"Good Evening 🌙";
+    }
+    setInterval(updateDateTime,1000); updateDateTime();
+
+    function goToStep2(){
+      const v=document.getElementById('vehicleNo').value.trim().toUpperCase();
+      const m=document.getElementById('mobileNo').value.trim();
+      if(!v){alert("Please enter vehicle registration number.");return;}
+      if(!/^[0-9]{10}$/.test(m)){alert("Please enter a valid 10-digit mobile number.");return;}
+      appData.vehicleNo=v;appData.mobileNo=m;
+      document.getElementById('vehicleNo').value=v;
+      document.getElementById('step-1').classList.add('hidden');document.getElementById('step-2').classList.remove('hidden');
+    }
+    function backToStep(n){[1,2,3,4].forEach(i=>document.getElementById('step-'+i).classList.toggle('hidden',i!==n));}
+    function selectServiceType(type){
+      appData.serviceType=type;appData.subService="";
+      ['Free','Paid','Repair'].forEach(t=>{
+        const id=t==='Free'?'btn-free':t==='Paid'?'btn-paid':'btn-repair';
+        document.getElementById(id).classList.remove('border-blue-600','bg-blue-50','border-emerald-600','bg-emerald-50','border-amber-600','bg-amber-50');
+      });
+      const id=type==='Free'?'btn-free':type==='Paid'?'btn-paid':'btn-repair';
+      const cls=type==='Free'?['border-blue-600','bg-blue-50']:type==='Paid'?['border-emerald-600','bg-emerald-50']:['border-amber-600','bg-amber-50'];
+      document.getElementById(id).classList.add(...cls);
+      document.getElementById('free-suboptions').classList.toggle('hidden',type!=='Free');
+      document.getElementById('paid-suboptions').classList.toggle('hidden',type!=='Paid');
+      document.getElementById('proceed-workjob').classList.remove('hidden');
+      document.querySelectorAll('.free-sub-btn,.paid-sub-btn').forEach(b=>b.classList.remove('bg-blue-600','text-white','border-blue-600','bg-emerald-600','border-emerald-600'));
+    }
+    function selectSubService(sub){
+      appData.subService=sub;
+      const isFree=appData.serviceType==='Free';
+      document.querySelectorAll(isFree?'.free-sub-btn':'.paid-sub-btn').forEach(b=>{
+        const active=isFree?b.innerText===sub:b.innerText.includes(sub);
+        b.classList.toggle(isFree?'bg-blue-600':'bg-emerald-600',active);
+        b.classList.toggle('text-white',active);
+        b.classList.toggle(isFree?'border-blue-600':'border-emerald-600',active);
+      });
+    }
+    function goToWorkjob(){
+      if(appData.serviceType==='Free'&&!appData.subService){alert("Please select a free service category (1st, 2nd, or 3rd).");return;}
+      if(appData.serviceType==='Paid'&&!appData.subService){alert("Please select a PMS package.");return;}
+      backToStep(3);
+      let display=appData.subService;
+      if(appData.serviceType==='Paid')display+=` (₹${appData.subService.includes('20/30/40')?2200:2000})`;
+      document.getElementById('workjob-subtitle').innerText=`${appData.serviceType}${display?' - '+display:''}`;
+      const list=document.getElementById('workjob-list');list.innerHTML='';
+      let items=appData.serviceType==='Free'?["Alignment","Balancing","Engine oil","AC filter","Brake service"]:appData.serviceType==='Paid'?["Alignment","Balancing","Engine oil","Coolant","Brake oil","Air filter","Spark plug","Fuel filter","AC filter","Gear oil","Injectors cleaning","Throttle body cleaning","Diagnosis","Brake service","Paid service"]:["Alignment","Balancing","Engine oil","Coolant","Brake oil","Air filter","Spark plug","Fuel filter","AC filter","Gear oil","Injectors cleaning","Throttle body cleaning","Diagnosis","Brake service"];
+      items.forEach((item,i)=>{
+        const checked=appData.serviceType==='Free'&&i<4?'checked':'';
+        const div=document.createElement('div');div.className="flex items-center justify-between p-2.5 bg-slate-50 border border-slate-200 rounded-xl hover:bg-slate-100 cursor-pointer";
+        const label=document.createElement('label');label.className="flex items-center gap-3 w-full cursor-pointer text-xs font-medium text-slate-700";
+        const cb=document.createElement('input');cb.type='checkbox';cb.value=item;cb.checked=!!checked;cb.className='workjob-checkbox w-4 h-4 text-blue-600 rounded border-slate-300 focus:ring-blue-500';
+        const span=document.createElement('span');span.textContent='📦 '+item;label.append(cb,span);div.append(label);list.append(div);
+      });
+    }
+    function generateEstimate(){
+      appData.selectedTasks=Array.from(document.querySelectorAll('.workjob-checkbox:checked')).map(x=>x.value);
+      if(!appData.selectedTasks.length){alert("Please select at least one workjob task/part.");return;}
+      document.getElementById('summary-vehicle').innerText=appData.vehicleNo;
+      document.getElementById('summary-mobile').innerText=appData.mobileNo;
+      let display=appData.subService;
+      if(appData.serviceType==='Paid')display+=` (₹${appData.subService.includes('20/30/40')?2200:2000})`;
+      document.getElementById('summary-servicetype').innerText=`${appData.serviceType}${display?' - '+display:''}`;
+      renderEstimateTable();backToStep(4);
+    }
+    function renderEstimateTable(){
+      const tbody=document.getElementById('estimate-table-body');tbody.innerHTML='';
+      let tasks=[...appData.selectedTasks];
+      if(appData.serviceType==='Paid'&&appData.subService)tasks.unshift('Package: '+appData.subService);
+      tasks.forEach((task,idx)=>{
+        let price=task.startsWith('Package:')?(task.includes('20/30/40')?2200:2000):(standardPrices[task]!==undefined?standardPrices[task]:500);
+        const tr=document.createElement('tr');const td1=document.createElement('td');td1.className='p-2.5 font-medium text-slate-700';td1.textContent=task;
+        const td2=document.createElement('td');td2.className='p-2.5 text-right';
+        const wrap=document.createElement('div');wrap.className='relative inline-flex items-center';
+        const rupee=document.createElement('span');rupee.className='absolute left-2 text-slate-400 text-xs';rupee.textContent='₹';
+        const input=document.createElement('input');input.type='number';input.min='0';input.step='0.01';input.value=price;input.dataset.index=idx;input.className='item-price-input w-28 pl-6 pr-2 py-1 border border-slate-200 rounded-lg text-right font-semibold text-xs focus:ring-2 focus:ring-blue-500 focus:outline-none';input.addEventListener('input',updateTotals);
+        wrap.append(rupee,input);td2.append(wrap);tr.append(td1,td2);tbody.append(tr);
+      });updateTotals();
+    }
+    function updateTotals(){
+      let subtotal=0;document.querySelectorAll('.item-price-input').forEach(i=>subtotal+=Math.max(0,parseFloat(i.value)||0));
+      const gst=subtotal*.18,grand=subtotal+gst;
+      document.getElementById('calc-subtotal').innerText='₹'+subtotal.toFixed(2);
+      document.getElementById('calc-gst').innerText='₹'+gst.toFixed(2);
+      document.getElementById('calc-grandtotal').innerText='₹'+grand.toFixed(2);
+    }
+    function sendWhatsApp(){
+      let lines=[],subtotal=0;
+      document.querySelectorAll('#estimate-table-body tr').forEach((row,i)=>{
+        const name=row.cells[0].innerText,price=Math.max(0,parseFloat(document.querySelectorAll('.item-price-input')[i].value)||0);
+        subtotal+=price;lines.push(`• ${name}: ₹${price.toFixed(2)}`);
+      });
+      const gst=subtotal*.18,grand=subtotal+gst;
+      let display=appData.subService;if(appData.serviceType==='Paid')display+=` (₹${appData.subService.includes('20/30/40')?2200:2000})`;
+      const message=`🚗 *SERVICE ESTIMATE - AUTOMOTIVE WORKSHOP* 🚗\\n\\n*Vehicle No:* ${appData.vehicleNo}\\n*Service Type:* ${appData.serviceType}${display?' ('+display+')':''}\\n\\n*Selected Items / Parts:*\\n${lines.join('\\n')}\\n\\n----------------------------------\\n*Subtotal:* ₹${subtotal.toFixed(2)}\\n*GST (18%):* ₹${gst.toFixed(2)}\\n*Grand Total:* ₹${grand.toFixed(2)}\\n\\nThank you for choosing our service! 🙏`;
+      window.open(`https://wa.me/91${appData.mobileNo}?text=${encodeURIComponent(message)}`,'_blank','noopener');
+    }
+
+    if('serviceWorker' in navigator && location.protocol!=='file:'){
+      window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(err=>console.warn('Service worker registration failed',err)));
+    }
+    window.addEventListener('beforeinstallprompt',e=>{
+      e.preventDefault();deferredInstallPrompt=e;
+      const btn=document.getElementById('installApp');if(btn)btn.classList.remove('hidden');
+    });
+    async function installApp(){
+      if(!deferredInstallPrompt){alert('To install: open your browser menu (⋮) and choose “Add to Home screen” or “Install app”.');return;}
+      deferredInstallPrompt.prompt();await deferredInstallPrompt.userChoice;deferredInstallPrompt=null;
+    }
+  </script>
+  <div class="fixed bottom-3 left-0 right-0 flex justify-center px-4 z-40">
+    <button id="installApp" onclick="installApp()" class="hidden bg-slate-900 text-white text-xs font-semibold px-4 py-2.5 rounded-full shadow-lg"><i class="fa-solid fa-download mr-2"></i>Install App</button>
+  </div>
+</body>
+</html>
