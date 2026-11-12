@@ -1,0 +1,438 @@
+
+Yeh lijiye aapka poora complete code. Aap isko copy karke apne phone ya computer par kisi bhi text editor (jaise Notepad) mein paste karein aur file ko service.html ke naam se save kar lein:
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vehicle Service & Estimation App</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
+
+    <!-- Top Bar: Date, Time & Greeting -->
+    <header class="bg-blue-600 text-white p-4 shadow-md sticky top-0 z-50">
+        <div class="max-w-md mx-auto flex justify-between items-center">
+            <div>
+                <h1 id="greeting" class="text-lg font-bold">Hello!</h1>
+                <p id="datetime" class="text-xs text-blue-100"></p>
+            </div>
+            <div class="bg-blue-700 p-2 rounded-full shadow-inner">
+                <i class="fa-solid fa-car-wrench text-xl"></i>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="flex-1 max-w-md w-full mx-auto p-4 pb-20">
+        
+        <!-- STEP 1: Customer & Vehicle Info -->
+        <div id="step-1" class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 mb-4">
+            <h2 class="text-base font-semibold text-slate-700 mb-3 flex items-center gap-2">
+                <span class="bg-blue-100 text-blue-600 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold">1</span>
+                Vehicle & Customer Details
+            </h2>
+            <div class="space-y-3">
+                <div>
+                    <label class="block text-xs font-medium text-slate-500 mb-1">Vehicle Registration Number</label>
+                    <input type="text" id="vehicleNo" placeholder="e.g. GJ05AB1234" class="w-full px-3 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none uppercase text-sm font-semibold tracking-wide">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-500 mb-1">Customer Mobile Number</label>
+                    <input type="tel" id="mobileNo" placeholder="e.g. 9876543210" maxlength="10" class="w-full px-3 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none text-sm font-semibold tracking-wide">
+                </div>
+                <button onclick="goToStep2()" class="w-full mt-2 bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-xl font-medium text-sm transition shadow-sm">
+                    Next: Select Service Type <i class="fa-solid fa-arrow-right ml-1"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- STEP 2: Service Type Selection -->
+        <div id="step-2" class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 mb-4 hidden">
+            <div class="flex justify-between items-center mb-3">
+                <h2 class="text-base font-semibold text-slate-700 flex items-center gap-2">
+                    <span class="bg-blue-100 text-blue-600 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold">2</span>
+                    Service Type
+                </h2>
+                <button onclick="backToStep(1)" class="text-xs text-blue-600 font-medium hover:underline">Edit Info</button>
+            </div>
+            
+            <div class="grid grid-cols-3 gap-2 mb-3">
+                <button onclick="selectServiceType('Free')" id="btn-free" class="p-3 border-2 border-slate-200 rounded-xl text-center hover:border-blue-500 transition focus:outline-none">
+                    <i class="fa-solid fa-gift text-blue-600 text-lg mb-1 block"></i>
+                    <span class="text-xs font-semibold block">Free Service</span>
+                </button>
+                <button onclick="selectServiceType('Paid')" id="btn-paid" class="p-3 border-2 border-slate-200 rounded-xl text-center hover:border-blue-500 transition focus:outline-none">
+                    <i class="fa-solid fa-file-invoice-dollar text-emerald-600 text-lg mb-1 block"></i>
+                    <span class="text-xs font-semibold block">Paid Service</span>
+                </button>
+                <button onclick="selectServiceType('Running Repair')" id="btn-repair" class="p-3 border-2 border-slate-200 rounded-xl text-center hover:border-blue-500 transition focus:outline-none">
+                    <i class="fa-solid fa-screwdriver-wrench text-amber-600 text-lg mb-1 block"></i>
+                    <span class="text-xs font-semibold block">Running Repair</span>
+                </button>
+            </div>
+
+            <!-- Sub-options for Free Service -->
+            <div id="free-suboptions" class="hidden mt-3 p-3 bg-slate-50 rounded-xl border border-slate-200">
+                <label class="block text-xs font-medium text-slate-600 mb-2">Select Free Service Type:</label>
+                <div class="grid grid-cols-3 gap-2">
+                    <button onclick="selectSubService('1st Free')" class="free-sub-btn p-2 bg-white border border-slate-200 rounded-lg text-xs font-medium hover:bg-blue-50 hover:border-blue-500">1st Free</button>
+                    <button onclick="selectSubService('2nd Free')" class="free-sub-btn p-2 bg-white border border-slate-200 rounded-lg text-xs font-medium hover:bg-blue-50 hover:border-blue-500">2nd Free</button>
+                    <button onclick="selectSubService('3rd Free')" class="free-sub-btn p-2 bg-white border border-slate-200 rounded-lg text-xs font-medium hover:bg-blue-50 hover:border-blue-500">3rd Free</button>
+                </div>
+            </div>
+
+            <!-- Sub-options for Paid Service -->
+            <div id="paid-suboptions" class="hidden mt-3 p-3 bg-slate-50 rounded-xl border border-slate-200">
+                <label class="block text-xs font-medium text-slate-600 mb-2">Select PMS Package:</label>
+                <div class="grid grid-cols-2 gap-2">
+                    <button onclick="selectSubService('PMS 20/30/40/60/80/90')" class="paid-sub-btn p-2.5 bg-white border border-slate-200 rounded-lg text-xs font-medium text-left hover:bg-emerald-50 hover:border-emerald-500">PMS 20/30/40/60/80/90 (₹2200)</button>
+                    <button onclick="selectSubService('PMS 50/70/90')" class="paid-sub-btn p-2.5 bg-white border border-slate-200 rounded-lg text-xs font-medium text-left hover:bg-emerald-50 hover:border-emerald-500">PMS 50/70/90 (₹2000)</button>
+                </div>
+            </div>
+
+            <button id="proceed-workjob" onclick="goToWorkjob()" class="w-full mt-3 bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-xl font-medium text-sm transition shadow-sm hidden">
+                Next: Select Workjob Tasks <i class="fa-solid fa-arrow-right ml-1"></i>
+            </button>
+        </div>
+
+        <!-- STEP 3: Workjob Checklist -->
+        <div id="step-3" class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 mb-4 hidden">
+            <div class="flex justify-between items-center mb-3">
+                <h2 class="text-base font-semibold text-slate-700 flex items-center gap-2">
+                    <span class="bg-blue-100 text-blue-600 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold">3</span>
+                    Workjob Tasks & Parts
+                </h2>
+                <button onclick="backToStep(2)" class="text-xs text-blue-600 font-medium hover:underline">Change Service</button>
+            </div>
+            <p id="workjob-subtitle" class="text-xs text-slate-500 mb-3 font-medium"></p>
+            
+            <div id="workjob-list" class="space-y-2 max-h-72 overflow-y-auto pr-1">
+                <!-- Dynamically populated checkboxes -->
+            </div>
+
+            <button onclick="generateEstimate()" class="w-full mt-4 bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 rounded-xl font-medium text-sm transition shadow-sm">
+                Generate Estimation <i class="fa-solid fa-calculator ml-1"></i>
+            </button>
+        </div>
+
+        <!-- STEP 4: Estimation & Summary -->
+        <div id="step-4" class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 mb-4 hidden">
+            <div class="flex justify-between items-center mb-3">
+                <h2 class="text-base font-semibold text-slate-700 flex items-center gap-2">
+                    <span class="bg-blue-100 text-blue-600 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold">4</span>
+                    Service Estimate
+                </h2>
+                <button onclick="backToStep(3)" class="text-xs text-blue-600 font-medium hover:underline">Edit Tasks</button>
+            </div>
+
+            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 mb-3 text-xs space-y-1">
+                <div class="flex justify-between"><span class="text-slate-500">Vehicle:</span> <span id="summary-vehicle" class="font-bold uppercase"></span></div>
+                <div class="flex justify-between"><span class="text-slate-500">Mobile:</span> <span id="summary-mobile" class="font-bold"></span></div>
+                <div class="flex justify-between"><span class="text-slate-500">Service:</span> <span id="summary-servicetype" class="font-bold text-blue-600"></span></div>
+            </div>
+
+            <div class="border border-slate-200 rounded-xl overflow-hidden mb-3">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-slate-100 text-slate-600 text-xs font-semibold">
+                            <th class="p-2.5">Item / Part</th>
+                            <th class="p-2.5 text-right">Amount (₹)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="estimate-table-body" class="divide-y divide-slate-100 text-xs">
+                        <!-- Dynamically filled item rows with editable inputs -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Calculation Breakdown -->
+            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-1.5 text-xs mb-4">
+                <div class="flex justify-between text-slate-600">
+                    <span>Subtotal:</span>
+                    <span id="calc-subtotal" class="font-semibold">₹0</span>
+                </div>
+                <div class="flex justify-between text-slate-600">
+                    <span>GST (18%):</span>
+                    <span id="calc-gst" class="font-semibold">₹0</span>
+                </div>
+                <div class="border-t border-slate-200 pt-1.5 flex justify-between text-sm font-bold text-slate-800">
+                    <span>Grand Total:</span>
+                    <span id="calc-grandtotal" class="text-blue-600">₹0</span>
+                </div>
+            </div>
+
+            <!-- WhatsApp Share Button -->
+            <button onclick="sendWhatsApp()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl font-medium text-sm transition shadow-md flex items-center justify-center gap-2">
+                <i class="fa-brands fa-whatsapp text-lg"></i> Send Estimate on WhatsApp
+            </button>
+        </div>
+
+    </main>
+
+    <script>
+        // Updated Standard Pricing Rule with custom amounts
+        const standardPrices = {
+            "Engine oil": 2000,
+            "AC filter": 650,
+            "Air filter": 350,
+            "Coolant": 600,
+            "Brake oil": 500,
+            "Gear oil": 2000,
+            "Spark plug": 2500,
+            "Fuel filter": 3500,
+            "Alignment": 455,
+            "Balancing": 385,
+            "Injectors cleaning": 530,
+            "Throttle body cleaning": 255,
+            "Diagnosis": 980,
+            "Brake service": 837.37,
+            "Paid service": 0
+        };
+
+        let appData = {
+            vehicleNo: "",
+            mobileNo: "",
+            serviceType: "",
+            subService: "",
+            selectedTasks: []
+        };
+
+        // Live Date, Time & Greeting
+        function updateDateTime() {
+            const now = new Date();
+            const options = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+            document.getElementById('datetime').innerText = now.toLocaleDateString('en-IN', options);
+            
+            const hour = now.getHours();
+            let greetingText = "Good Morning ☀️";
+            if (hour >= 12 && hour < 17) {
+                greetingText = "Good Afternoon 🌤️";
+            } else if (hour >= 17) {
+                greetingText = "Good Evening 🌙";
+            }
+            document.getElementById('greeting').innerText = greetingText;
+        }
+        setInterval(updateDateTime, 1000);
+        updateDateTime();
+
+        function goToStep2() {
+            const vNo = document.getElementById('vehicleNo').value.trim();
+            const mNo = document.getElementById('mobileNo').value.trim();
+            if(!vNo) { alert("Please enter vehicle registration number."); return; }
+            if(!mNo || mNo.length !== 10) { alert("Please enter a valid 10-digit mobile number."); return; }
+            
+            appData.vehicleNo = vNo;
+            appData.mobileNo = mNo;
+
+            document.getElementById('step-1').classList.add('hidden');
+            document.getElementById('step-2').classList.remove('hidden');
+        }
+
+        function backToStep(stepNum) {
+            document.getElementById('step-1').classList.add('hidden');
+            document.getElementById('step-2').classList.add('hidden');
+            document.getElementById('step-3').classList.add('hidden');
+            document.getElementById('step-4').classList.add('hidden');
+            document.getElementById(`step-${stepNum}`).classList.remove('hidden');
+        }
+
+        function selectServiceType(type) {
+            appData.serviceType = type;
+            appData.subService = "";
+            
+            // Highlight active button
+            ['Free', 'Paid', 'Repair'].forEach(t => {
+                const btnId = t === 'Free' ? 'btn-free' : (t === 'Paid' ? 'btn-paid' : 'btn-repair');
+                document.getElementById(btnId).classList.remove('border-blue-600', 'bg-blue-50', 'border-emerald-600', 'bg-emerald-50', 'border-amber-600', 'bg-amber-50');
+            });
+
+            const activeBtn = type === 'Free' ? 'btn-free' : (type === 'Paid' ? 'btn-paid' : 'btn-repair');
+            const activeColor = type === 'Free' ? ['border-blue-600', 'bg-blue-50'] : (type === 'Paid' ? ['border-emerald-600', 'bg-emerald-50'] : ['border-amber-600', 'bg-amber-50']);
+            document.getElementById(activeBtn).classList.add(...activeColor);
+
+            // Toggle suboptions
+            document.getElementById('free-suboptions').classList.add('hidden');
+            document.getElementById('paid-suboptions').classList.add('hidden');
+            document.getElementById('proceed-workjob').classList.remove('hidden');
+
+            if (type === 'Free') {
+                document.getElementById('free-suboptions').classList.remove('hidden');
+            } else if (type === 'Paid') {
+                document.getElementById('paid-suboptions').classList.remove('hidden');
+            }
+        }
+
+        function selectSubService(sub) {
+            appData.subService = sub;
+            if (appData.serviceType === 'Free') {
+                document.querySelectorAll('.free-sub-btn').forEach(b => {
+                    b.classList.remove('bg-blue-600', 'text-white', 'border-blue-600');
+                    if(b.innerText === sub) b.classList.add('bg-blue-600', 'text-white', 'border-blue-600');
+                });
+            } else if (appData.serviceType === 'Paid') {
+                document.querySelectorAll('.paid-sub-btn').forEach(b => {
+                    b.classList.remove('bg-emerald-600', 'text-white', 'border-emerald-600');
+                    if(b.innerText.includes(sub)) b.classList.add('bg-emerald-600', 'text-white', 'border-emerald-600');
+                });
+            }
+        }
+
+        function goToWorkjob() {
+            if (appData.serviceType === 'Free' && !appData.subService) { alert("Please select a free service category (1st, 2nd, or 3rd)."); return; }
+            if (appData.serviceType === 'Paid' && !appData.subService) { alert("Please select a PMS package."); return; }
+
+            document.getElementById('step-2').classList.add('hidden');
+            document.getElementById('step-3').classList.remove('hidden');
+
+            let subDisplay = appData.subService;
+            if (appData.serviceType === 'Paid') {
+                let pkgPrice = appData.subService.includes('20/30/40') ? 2200 : 2000;
+                subDisplay += ` (₹${pkgPrice})`;
+            }
+
+            document.getElementById('workjob-subtitle').innerText = `${appData.serviceType} ${subDisplay ? '- '+subDisplay : ''}`;
+
+            const listContainer = document.getElementById('workjob-list');
+            listContainer.innerHTML = '';
+
+            let items = [];
+            if (appData.serviceType === 'Free') {
+                items = ["Alignment", "Balancing", "Engine oil", "AC filter", "Brake service"];
+            } else if (appData.serviceType === 'Paid') {
+                items = ["Alignment", "Balancing", "Engine oil", "Coolant", "Brake oil", "Air filter", "Spark plug", "Fuel filter", "AC filter", "Gear oil", "Injectors cleaning", "Throttle body cleaning", "Diagnosis", "Brake service", "Paid service"];
+            } else {
+                items = ["Alignment", "Balancing", "Engine oil", "Coolant", "Brake oil", "Air filter", "Spark plug", "Fuel filter", "AC filter", "Gear oil", "Injectors cleaning", "Throttle body cleaning", "Diagnosis", "Brake service"];
+            }
+
+            items.forEach((item, index) => {
+                const isChecked = (appData.serviceType === 'Free' && index < 4) ? 'checked' : '';
+                const div = document.createElement('div');
+                div.className = "flex items-center justify-between p-2.5 bg-slate-50 border border-slate-200 rounded-xl hover:bg-slate-100 cursor-pointer";
+                div.innerHTML = `
+                    <label class="flex items-center gap-3 w-full cursor-pointer text-xs font-medium text-slate-700">
+                        <input type="checkbox" value="${item}" ${isChecked} class="workjob-checkbox w-4 h-4 text-blue-600 rounded border-slate-300 focus:ring-blue-500">
+                        <span>📦 ${item}</span>
+                    </label>
+                `;
+                listContainer.appendChild(div);
+            });
+        }
+
+        function generateEstimate() {
+            const checkboxes = document.querySelectorAll('.workjob-checkbox:checked');
+            appData.selectedTasks = Array.from(checkboxes).map(cb => cb.value);
+
+            if(appData.selectedTasks.length === 0) {
+                alert("Please select at least one workjob task/part.");
+                return;
+            }
+
+            document.getElementById('step-3').classList.add('hidden');
+            document.getElementById('step-4').classList.remove('hidden');
+
+            document.getElementById('summary-vehicle').innerText = appData.vehicleNo;
+            document.getElementById('summary-mobile').innerText = appData.mobileNo;
+            
+            let subDisplay = appData.subService;
+            if (appData.serviceType === 'Paid') {
+                let pkgPrice = appData.subService.includes('20/30/40') ? 2200 : 2000;
+                subDisplay += ` (₹${pkgPrice})`;
+            }
+            document.getElementById('summary-servicetype').innerText = `${appData.serviceType} ${subDisplay ? '- '+subDisplay : ''}`;
+
+            renderEstimateTable();
+        }
+
+        function renderEstimateTable() {
+            const tbody = document.getElementById('estimate-table-body');
+            tbody.innerHTML = '';
+
+            let tasksToRender = [...appData.selectedTasks];
+            if (appData.serviceType === 'Paid' && appData.subService) {
+                let pkgName = `Package: ${appData.subService}`;
+                if(!tasksToRender.includes(pkgName)) {
+                    tasksToRender.unshift(pkgName);
+                }
+            }
+
+            tasksToRender.forEach((task, idx) => {
+                let defaultPrice = 500;
+                if (task.startsWith('Package:')) {
+                    defaultPrice = task.includes('20/30/40') ? 2200 : 2000;
+                } else if (standardPrices[task] !== undefined) {
+                    defaultPrice = standardPrices[task];
+                }
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="p-2.5 font-medium text-slate-700">${task}</td>
+                    <td class="p-2.5 text-right">
+                        <div class="relative inline-flex items-center">
+                            <span class="absolute left-2 text-slate-400 text-xs">₹</span>
+                            <input type="number" step="0.01" value="${defaultPrice}" data-index="${idx}" oninput="updateTotals()" class="item-price-input w-28 pl-6 pr-2 py-1 border border-slate-200 rounded-lg text-right font-semibold text-xs focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            updateTotals();
+        }
+
+        function updateTotals() {
+            const priceInputs = document.querySelectorAll('.item-price-input');
+            let subtotal = 0;
+            priceInputs.flow ? priceInputs.forEach(input => { subtotal += parseFloat(input.value) || 0; }) : priceInputs.forEach(input => { subtotal += parseFloat(input.value) || 0; });
+
+            let gst = subtotal * 0.18;
+            let grandTotal = subtotal + gst;
+
+            document.getElementById('calc-subtotal').innerText = `₹${subtotal.toFixed(2)}`;
+            document.getElementById('calc-gst').innerText = `₹${gst.toFixed(2)}`;
+            document.getElementById('calc-grandtotal').innerText = `₹${grandTotal.toFixed(2)}`;
+        }
+
+        function sendWhatsApp() {
+            const priceInputs = document.querySelectorAll('.item-price-input');
+            let itemsSummary = "";
+            let subtotal = 0;
+
+            const rows = document.querySelectorAll('#estimate-table-body tr');
+            rows.forEach((row, idx) => {
+                let taskName = row.cells[0].innerText;
+                let price = parseFloat(priceInputs[idx].value) || 0;
+                subtotal += price;
+                itemsSummary += `• ${taskName}: ₹${price.toFixed(2)}\n`;
+            });
+
+            let gst = subtotal * 0.18;
+            let grandTotal = subtotal + gst;
+
+            let subDisplay = appData.subService;
+            if (appData.serviceType === 'Paid') {
+                let pkgPrice = appData.subService.includes('20/30/40') ? 2200 : 2000;
+                subDisplay += ` (₹${pkgPrice})`;
+            }
+
+            let message = `🚗 *SERVICE ESTIMATE - AUTOMOTIVE WORKSHOP* 🚗\n\n` +
+                          `*Vehicle No:* ${appData.vehicleNo}\n` +
+                          `*Service Type:* ${appData.serviceType} ${subDisplay ? '('+subDisplay+')' : ''}\n\n` +
+                          `*Selected Items / Parts:*\n${itemsSummary}\n` +
+                          `----------------------------------\n` +
+                          `*Subtotal:* ₹${subtotal.toFixed(2)}\n` +
+                          `*GST (18%):* ₹${gst.toFixed(2)}\n` +
+                          `*Grand Total:* ₹${grandTotal.toFixed(2)}\n\n` +
+                          `Thank you for choosing our service! 🙏`;
+
+            let encodedUrl = `https://wa.me/91${appData.mobileNo}?text=${encodeURIComponent(message)}`;
+            window.open(encodedUrl, '_blank');
+        }
+    </script>
+</body>
+</html>
